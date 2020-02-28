@@ -1,0 +1,8 @@
+{
+  "appId": "come.ionic.bookn",
+  "appName": "bookn",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}

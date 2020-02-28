@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">bookn</string>
+    <string name="title_activity_main">bookn</string>
+    <string name="package_name">come.ionic.bookn</string>
+    <string name="custom_url_scheme">come.ionic.bookn</string>
+</resources>

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import {Plugins, Capacitor} from '@capacitor/core';
+import { AuthService } from './auth/auth.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,18 +12,45 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+  private authSub: Subscription;
+  private previousAuthState = false;
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private authService: AuthService,
+    private router: Router
   ) {
     this.initializeApp();
   }
 
+
+
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      if(Capacitor.isPluginAvailable('SplashScreen')){
+        Plugins.SplashScreen.hide();
+      }
     });
+  }
+  ngOnInit(): void {
+    // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    // Add 'implements OnInit' to the class.
+    this.authSub = this.authService.userIsAuthenticated.subscribe(isAuth => {
+      if (!isAuth && this.previousAuthState !== isAuth) {
+        this.router.navigateByUrl('/auth');
+      }
+      this.previousAuthState = isAuth;
+
+    });
+  }
+  onLogout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/auth');
+  }
+  ngOnDestroy(): void {
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+    if (this.authSub) {
+    this.authSub.unsubscribe()
+    }
   }
 }
